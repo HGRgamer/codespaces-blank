@@ -1,0 +1,70 @@
+<!-- views/keygen.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api key gen</title>
+    <%- include ("partials/style") %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <%- include ("partials/header") %>
+
+    <center>
+        <h1 style="font-size:200">Api Key Gen</h1>
+    </center>
+    <form method="POST">
+        <label>Created By (like lucky)
+            <input type="text" name="createdBy" required>
+        </label>
+        <br>
+        <br>
+        <label>Description (using where)
+            <input type="text" name="description" required>
+        </label>
+        <br>
+        <br>
+        <br>
+        <label style="font-size:200%"><b>Permissions</b></label><br>
+        <br>
+        <% for(const category in permissions ) { %>
+            <label> <b> <%= category %> </b> </label> 
+            <br>
+            <% permissions[category].forEach((perm)=> { %>
+                <input type="checkbox" name="permissions[<%= perm %>]" value="true">
+                    <%= (perm == 'allPerms' ) ? '!!!! allPerms !!!! (This gives person access to everything)' : perm %>
+                </input>
+                <br>
+            <% }) %>
+            <br>
+        <% } %>
+        <label>secretKey
+            <input type="password" name="secretKey" autocomplete="off" required/>
+        </label>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        $("form").on("submit", function (event) {
+            $('form').remove()
+            event.preventDefault();
+            $.post('/api/key/gen', $(this).serializeArray(), function (data) {
+                var h1 = document.createElement("pre");
+                h1.innerHTML = data;
+                document.body.appendChild(h1);
+            }).fail(function (response) {
+                var h1 = document.createElement("pre");
+                h1.innerHTML = 'Error: ' + JSON.stringify(JSON.parse(response.responseText), null, 2);
+                document.body.appendChild(h1);
+            });
+        });
+    </script>
+    
+</body>
+
+</html>

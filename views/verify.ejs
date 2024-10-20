@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Key</title>
+  <%- include ("partials/style") %>
+</head>
+<body>
+  <%- include ("partials/header") %>
+  <h1>Verify Key</h1>
+  <form action="/api/key/verify" method="post">
+    <label for="key">Enter the key:</label>
+    <input type="text" id="key" name="key" autocomplete="off" required>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
