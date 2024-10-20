@@ -1,5 +1,6 @@
 const { body, param } = require("express-validator");
 const { userIdValidationRules } = require("./UserValidation");
+const { imgToUrl } = require("../Utils");
 
 const eventIdValidationRules = () => {
   return [
@@ -47,7 +48,15 @@ const eventUpdateValidationRules = () => {
 
     body("photos")
       .notEmpty()
-      .isString(),
+      .isArray()
+      .bail()
+      .customSanitizer(async value => {
+        var a = [];
+        for(const imgData of value){
+          a.push(await imgToUrl(imgData));
+        }
+        return JSON.stringify(a);
+      }),
 
     body("comments")
       .notEmpty()

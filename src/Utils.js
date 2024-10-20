@@ -1,3 +1,5 @@
+const cloudinary = require("cloudinary").v2;
+
 function objectToQueryString(data) {
   // Build set list
   let set = '';
@@ -6,8 +8,8 @@ function objectToQueryString(data) {
     //if value is string put it in another quotes
     if (typeof data[name] === 'string') {
       set += `${name} = '${data[name]}'`;
-    } else{
-    set += `${name} = ${data[name]}`;
+    } else {
+      set += `${name} = ${data[name]}`;
     }
   }
   return set;
@@ -32,5 +34,16 @@ function removeDuplicates(data) {
   return uniqueArray;
 }
 
+async function imgToUrl(imgData) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
 
-module.exports = { objectToQueryString, objectArrayToJsonString, removeDuplicates };
+  const uploadResponse = await cloudinary.uploader.upload(imgData);
+  return uploadResponse.secure_url;
+}
+
+
+module.exports = { objectToQueryString, objectArrayToJsonString, removeDuplicates, imgToUrl};

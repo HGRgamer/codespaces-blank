@@ -43,7 +43,7 @@ const userRegisterValidationRules = () => {
 
     body("location")
       .notEmpty()
-      .isLength({ min: 6 })
+      .isLength({ min: 6, max: 6 })
       .isString(),
 
     body("creator")
