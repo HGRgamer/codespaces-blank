@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const ApiTokenService = require("../services/ApiTokenService");
+const User = require("../models/User");
 
 const authMiddleware = (permRequired = 0) => {
     return async (req, res, next) => {
@@ -8,27 +8,36 @@ const authMiddleware = (permRequired = 0) => {
             jwt.verify(token, process.env.SECRET_KEY, async function (err, decode) {
                 if (err) {
                     res.status(500).send({ message: err });
+                    return;
                 }
-
+                console.log(decode);
                 const userId = decode.userId;
 
                 //todo
                 //check user exists
-                data = await ApiTokenService.getTokenData(token);
-
+                data = (await User.get(userId));
+                const result = (await User.get(userId))[0];
+                if (result.length == 0) {
+                  return res.status(404).json({message: "User's Data does not exist", userId});
+                }
+                delete result[0].hashedpassword;
+                data = result[0];
+          
+                
                 if (!data) {
                     err = "Expired session, please sign in again";
                 } else {
-                    req.param.userId = userId;
+                    req.params.userId = userId;
                     switch (permRequired) {
                         case 2:
                             if (!data.admin) err = 'Api key does not have permission to access this api endpoint.';
                         case 1:
                             if (!data.creator) err = 'Api key does not have permission to access this api endpoint.';
                         case 0:
-                            return next();
+                            if(!err) return next();
                     }
                 }
+                console.log(err);
                 if (err) {
                     res.status(401).send({ message: err });
                 }

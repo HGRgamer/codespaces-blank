@@ -1,7 +1,8 @@
 const { validationResult, matchedData } = require("express-validator");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
-const { objectToQueryString } = require("../services/Utils");
+const { objectToQueryString } = require("../Utils");
+const jwt = require("jsonwebtoken");
 
 const UserController = {
   register: async (req, res) => {
@@ -14,7 +15,8 @@ const UserController = {
       }
 
       const data = matchedData(req);
-
+      const userId = data.userId;
+      
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(data.password, salt)
 
@@ -22,12 +24,18 @@ const UserController = {
       delete tmp.userId;
       delete tmp.password;
       tmp.hashedPassword = hashedPassword;
-
-      const result1 = await User.init(data.userId);
       
-      const result = await User.update(data.userId, objectToQueryString(tmp));
+      const check1 = (await User.get(userId))[0];
+      const check2 = (await User.getByEmail(data.email))[0];
+      if (check1.length != 0 || check2.length != 0) {
+        return res.status(401).json({message: "User with that username or email already exists", userId});
+      }
+
+      const result1 = await User.init(userId);
+      
+      const result = await User.update(userId, objectToQueryString(tmp));
       if (result1[0].affectedRows == 0 || result[0].affectedRows == 0) {
-        return res.status(404).json({ message: "Failed to register user", userId: data.userId, data: tmp });
+        return res.status(404).json({ message: "Failed to register user", userId, data: tmp });
       }
 
       res.status(201).json({ message: "Registered user successfully" });
@@ -45,14 +53,15 @@ const UserController = {
       if (!errors.isEmpty()) {
         return res.status(400).json({ message: errors.array() });
       }
-      const { userId, password } = matchedData(req);
+      const { email, password } = matchedData(req);
 
-      const result = (await User.get(userId))[0];
+      const result = (await User.getByEmail(email))[0];
       if (result.length == 0) {
-        return res.status(404).json({ message: "User does not exists", userId });
+        return res.status(404).json({ message: "User does not exists", email });
       }
-
-      const isMatch = await bcrypt.compare(password, result[0].hashedPassword)
+      
+      const userId = result[0].id;
+      const isMatch = await bcrypt.compare(password, result[0].hashedpassword)
 
       if (isMatch) {
         token = jwt.sign({ userId }, process.env.SECRET_KEY, { expiresIn: '30m' });
@@ -62,7 +71,7 @@ const UserController = {
           // secure: true ,
           // maxAge: 5 * 60
         });
-        res.status(200).json({ userId, info });
+        res.status(200).json({ userId });
       }
       else
         res.status(401).json({ message: "Invalid or wrong password", userId });
@@ -86,6 +95,7 @@ const UserController = {
       if (result.length == 0) {
         return res.status(404).json({message: "User's Data does not exist", userId});
       }
+      delete result[0].hashedpassword;
       res.status(200).json(result[0]);
     } catch (error) {
       console.error(error);

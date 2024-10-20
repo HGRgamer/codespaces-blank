@@ -29,12 +29,13 @@ const userRegisterValidationRules = () => {
   return [
     body("userId")
       .notEmpty()
-      .isLength({ min: 1, max: 32 }),
+      .isLength({ min: 1, max: 20 })
+      .isString(),
 
     body("name")
       .notEmpty()
       .isLength({ min: 1, max: 32 })
-      .isAlphanumeric(),
+      .isString(),
 
     body("email")
       .notEmpty()
@@ -47,7 +48,7 @@ const userRegisterValidationRules = () => {
 
     body("creator")
       .notEmpty()
-      .isInt(),
+      .isBoolean(),
 
     body("password")
       .notEmpty()
@@ -57,15 +58,15 @@ const userRegisterValidationRules = () => {
 };
 
 const userUpdateValidationRules = () => {
-  return userIdValidationRules.concat([      
+  return userIdValidationRules().concat([      
     body("phone")
       .optional()
       .isInt(),
 
     body("name")
       .optional()
-      .isLength({ min: 1, max: 32 })
-      .isAlphanumeric(),
+      .isLength({ min: 1, max: 20 })
+      .isString(),
 
     body("email")
       .optional()
@@ -78,7 +79,7 @@ const userUpdateValidationRules = () => {
 
     body("creator")
       .optional()
-      .isInt(),
+      .isBoolean(),
 
     body("address")
       .optional()

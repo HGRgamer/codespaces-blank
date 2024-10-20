@@ -14,9 +14,9 @@ router.all("/logout", (req, res) => {
     res.status(200).send();
 });
 
-router.use(authMiddleware(0));
+// router.use(authMiddleware(0));
 
-router.get("/", userIdValidationRules(), UserController.get);
-router.post("/update", userUpdateValidationRules(), UserController.update);
+router.get("/", authMiddleware(0), userIdValidationRules(), UserController.get);
+router.post("/update", authMiddleware(0), userUpdateValidationRules(), UserController.update);
 
 module.exports = router;

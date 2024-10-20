@@ -12,6 +12,9 @@ const User = {
   get: (id) => {
     return db.promise().query("SELECT * FROM users WHERE id = ?", [id]);
   },
+  getByEmail: (email) => {
+    return db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
+  },
   update: (id, newInfo) => {
   //newSettings in string format 
     return db

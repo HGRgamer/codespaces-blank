@@ -1,5 +1,5 @@
 const { validationResult, matchedData } = require("express-validator");
-const { removeDuplicates } = require("../services/Utils");
+const { removeDuplicates } = require("../Utils");
 
 const PlayerKitsHelper = require("../services/PlayerKitsHelper");
 const PlayerSettingsHelper = require("../services/PlayerSettingsHelper");

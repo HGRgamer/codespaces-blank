@@ -5,15 +5,15 @@ const authMiddleware = require("../middleware/AuthMiddleware");
 
 const EventController = require("../controllers/EventController");
 const { eventIdValidationRules, eventUpdateValidationRules, eventCreateValidationRules } = require("../validations/EventValidation");
+const { userIdValidationRules } = require("../validations/UserValidation");
 
-router.use(authMiddleware(0));
 
-router.get("/:id", eventIdValidationRules(), EventController.get);
+router.get("/all", authMiddleware(0), userIdValidationRules(), EventController.getAll);
 
-router.use(authMiddleware(1));
+router.get("/:eventId", authMiddleware(0), eventIdValidationRules(), EventController.get);
 
-router.post("/:id/update", eventUpdateValidationRules(), EventController.update);
+router.post("/:eventId/update", authMiddleware(1), eventUpdateValidationRules(), EventController.update);
 
-router.post("/create", eventCreateValidationRules(), EventController.create);
+router.post("/create", authMiddleware(1), eventCreateValidationRules(), EventController.create);
 
 module.exports = router;

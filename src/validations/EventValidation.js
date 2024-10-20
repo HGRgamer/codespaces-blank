@@ -1,4 +1,5 @@
 const { body, param } = require("express-validator");
+const { userIdValidationRules } = require("./UserValidation");
 
 const eventIdValidationRules = () => {
   return [
@@ -13,12 +14,12 @@ const eventIdValidationRules = () => {
 };
 
 const eventUpdateValidationRules = () => {
-  return eventIdValidationRules.concat([
-    body("type")
+  return ([
+    body("category")
       .notEmpty()
       .isLength({ min: 1, max: 32 }),
 
-    body("name")
+    body("title")
       .notEmpty()
       .isLength({ min: 1, max: 32 })
       .isAlphanumeric(),
@@ -29,7 +30,7 @@ const eventUpdateValidationRules = () => {
 
     body("hasDate")
       .notEmpty()
-      .isBool(),
+      .isBoolean(),
 
     body("startDate")
       .notEmpty()
@@ -46,22 +47,21 @@ const eventUpdateValidationRules = () => {
 
     body("photos")
       .notEmpty()
+      .isString(),
+
+    body("comments")
+      .notEmpty()
+      .isString(),
+
+    body("artists")
+      .notEmpty()
       .isString()
   ])
 };
 
 const eventCreateValidationRules = () => {
-  return eventUpdateValidationRules.concat([
-    body("paymentId")
-      .notEmpty()
-      .isString(),
-
-    body("createdBy")
-      .notEmpty()
-      .isLength({ min: 1, max: 32 })
-      .isString(),
-
-    body("createTime")
+  return eventUpdateValidationRules().concat(userIdValidationRules(),[
+    body("entryFee")
       .notEmpty()
       .isInt(),
   ])

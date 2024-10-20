@@ -132,7 +132,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-tmp2
+tmp
 backups
 .vscode
 .git
+batua-main
