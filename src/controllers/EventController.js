@@ -1,5 +1,5 @@
 const { validationResult, matchedData } = require("express-validator");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const Event = require("../models/Event");
 const { objectToQueryString } = require("../Utils");
 
