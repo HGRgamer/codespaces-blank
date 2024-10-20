@@ -35,11 +35,11 @@ const eventUpdateValidationRules = () => {
 
     body("startDate")
       .notEmpty()
-      .isInt(),
+      .isString(),
 
     body("endDate")
       .notEmpty()
-      .isInt(),
+      .isString(),
 
     body("location")
       .notEmpty()

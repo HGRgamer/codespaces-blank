@@ -37,6 +37,15 @@ const UserController = {
       if (result1[0].affectedRows == 0 || result[0].affectedRows == 0) {
         return res.status(404).json({ message: "Failed to register user", userId, data: tmp });
       }
+      if (isMatch) {
+        token = jwt.sign({ userId }, process.env.SECRET_KEY, { expiresIn: '30m' });
+        res.cookie('token', token, {
+          httpOnly: true,
+          //todo https
+          // secure: true ,
+          // maxAge: 5 * 60
+        });
+      }
 
       res.status(201).json({ message: "Registered user successfully" });
     } catch (error) {

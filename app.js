@@ -61,8 +61,8 @@ db.execute(`
     title VARCHAR(50) DEFAULT '',
     description LONGTEXT DEFAULT NULL,
     hasDate BOOLEAN DEFAULT 0,
-    startDate bigint(20) DEFAULT 0,
-    endDate bigint(20) DEFAULT 0,
+    startDate VARCHAR(50),
+    endDate VARCHAR(50),
     location VARCHAR(6) DEFAULT '000000',
     photos LONGTEXT DEFAULT '[]',
     
