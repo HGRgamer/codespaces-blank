@@ -21,7 +21,9 @@ const port = process.env.PORT || 3000;
 
 app.use(cookieParser())
 app.use(bodyParser.json());
-app.use(cors()); // Allow all origins (not recommended for production)
+app.use(cors(
+  
+)); // Allow all origins (not recommended for production)
 
 //routes
 app.use('/api/user/', userRoutes);
@@ -73,4 +75,4 @@ db.execute(`
   ) ENGINE=INNODB;
 `);
 
-initBackup();
+// initBackup();

@@ -23,7 +23,7 @@ const eventUpdateValidationRules = () => {
     body("title")
       .notEmpty()
       .isLength({ min: 1, max: 32 })
-      .isAlphanumeric(),
+      .isString(),
 
     body("description")
       .notEmpty()

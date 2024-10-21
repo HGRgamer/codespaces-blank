@@ -73,7 +73,7 @@ const UserController = {
       const isMatch = await bcrypt.compare(password, result[0].hashedpassword)
 
       if (isMatch) {
-        token = jwt.sign({ userId }, process.env.SECRET_KEY, { expiresIn: '30m' });
+        token = jwt.sign({ userId }, process.env.SECRET_KEY, { expiresIn: '30d' });
         res.cookie('token', token, {
           httpOnly: true,
           //todo https
